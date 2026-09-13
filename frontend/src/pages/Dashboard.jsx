@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { useNotifications } from "../context/NotificationContext";
+import { api } from "../services/api";
 
 const trendData = [
   { month: "Jan", predictions: 18, success: 14 },
@@ -28,28 +29,45 @@ const barData = [
 export default function Dashboard() {
   const { t } = useTranslation();
   const { items, unread } = useNotifications();
+  const [predictions, setPredictions] = useState([]);
+
+  useEffect(() => {
+    api.getPredictions().then(setPredictions).catch(() => setPredictions([]));
+  }, []);
+
+  const successfulSites = predictions.filter((prediction) =>
+    ["high", "excellent", "good"].includes(
+      String(prediction.water_potential).toLowerCase()
+    )
+  ).length;
+  const averageConfidence = predictions.length
+    ? Math.round(
+        predictions.reduce((total, prediction) => total + prediction.confidence, 0) /
+          predictions.length
+      )
+    : 0;
 
   const stats = [
     {
       label: "Total Predictions",
-      value: "241",
-      sub: "+12 this week",
+      value: String(predictions.length),
+      sub: "Saved predictions",
       color: "text-[#0F4C8A]",
       bg: "bg-gradient-to-br from-white to-[#E8F1FB]",
       border: "border-[#C5D9F0]",
     },
     {
       label: "Successful Sites",
-      value: "187",
-      sub: "77% success",
+      value: String(successfulSites),
+      sub: predictions.length ? "High-potential sites" : "No results yet",
       color: "text-emerald-700",
       bg: "bg-gradient-to-br from-white to-emerald-50",
       border: "border-emerald-100",
     },
     {
       label: "Avg. Confidence",
-      value: "83%",
-      sub: "Model accuracy",
+      value: `${averageConfidence}%`,
+      sub: "Average confidence",
       color: "text-[#135AAD]",
       bg: "bg-gradient-to-br from-white to-sky-50",
       border: "border-sky-100",

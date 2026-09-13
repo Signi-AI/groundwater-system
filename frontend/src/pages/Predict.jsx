@@ -50,7 +50,6 @@ export default function Predict() {
       const data = await api.createPrediction({
         latitude: parseFloat(form.latitude),
         longitude: parseFloat(form.longitude),
-        region: form.region || null,
         resistivity: form.resistivity ? parseFloat(form.resistivity) : null,
         elevation: form.elevation ? parseFloat(form.elevation) : null,
         rainfall: form.rainfall ? parseFloat(form.rainfall) : null,
@@ -64,7 +63,7 @@ export default function Predict() {
         aquifer: data.aquifer_potential || data.aquifer || "—",
         yield: data.expected_yield || data.yield || "—",
         quality: data.water_quality || data.quality || "—",
-        ph: data.ph != null ? String(data.ph) : "—",
+        ph: data.ph_range || data.ph || "—",
         salinity: data.salinity || "—",
         confidence: data.confidence || 80,
         recommendation: data.recommendation || "See detailed report",

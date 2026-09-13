@@ -35,6 +35,10 @@ async function request(path, options = {}) {
   }
 
   if (!res.ok) {
+    if (res.status === 401) {
+      clearToken();
+      window.dispatchEvent(new Event("auth:expired"));
+    }
     let msg = "Request failed";
     if (typeof data?.detail === "string") msg = data.detail;
     else if (Array.isArray(data?.detail)) {

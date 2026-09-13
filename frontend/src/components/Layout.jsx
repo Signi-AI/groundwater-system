@@ -24,14 +24,19 @@ const logout = () => {
 };
 
   useEffect(() => {
+    const onAuthExpired = () => navigate("/login", { replace: true });
     const onClick = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setNotifOpen(false);
       }
     };
+    window.addEventListener("auth:expired", onAuthExpired);
     document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, []);
+    return () => {
+      window.removeEventListener("auth:expired", onAuthExpired);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, [navigate]);
 
   return (
     <div className="flex min-h-screen bg-[#EEF3F9] dark:bg-slate-950 transition-colors">
