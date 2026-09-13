@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "leaflet/dist/leaflet.css";
+
+@keyframes zoom-soft {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.12); opacity: 0.8; }
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(12px, -10px) rotate(2deg); }
+  66% { transform: translate(-10px, 8px) rotate(-2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes orbit {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.animate-zoom-soft {
+  animation: zoom-soft 7s ease-in-out infinite;
+}
+.animate-drift {
+  animation: drift 10s ease-in-out infinite;
+}
+.animate-orbit {
+  animation: orbit 6s ease-in-out infinite;
+}
