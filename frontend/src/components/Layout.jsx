@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar";
 import { useTheme } from "../context/ThemeContext";
 import { useNotifications } from "../context/NotificationContext";
+import { clearToken } from "../services/api";
 
 export default function Layout() {
   const { dark, toggle } = useTheme();
@@ -17,11 +18,10 @@ export default function Layout() {
   const isSw = i18n.language && i18n.language.startsWith("sw");
   const toggleLang = () => i18n.changeLanguage(isSw ? "en" : "sw");
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("demo_user");
-    navigate("/login");
-  };
+const logout = () => {
+  clearToken();
+  navigate("/login");
+};
 
   useEffect(() => {
     const onClick = (e) => {
@@ -115,12 +115,9 @@ export default function Layout() {
               )}
             </div>
 
-            <button
-              onClick={logout}
-              className="text-xs px-3 py-1.5 rounded-full border border-red-100 text-red-600 hover:bg-red-50 bg-white"
-            >
-              Logout
-            </button>
+            <button type="button" onClick={logout} className="...">
+  Logout
+</button>
           </div>
         </header>
 

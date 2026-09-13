@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { api, setToken } from "../services/api";
 
 const glassCard = {
   background: "rgba(20, 24, 32, 0.55)",
@@ -22,26 +23,28 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
-      setError("Email and password required");
-      return;
-    }
     setLoading(true);
-    // DEMO only — no backend
-    setTimeout(() => {
-      localStorage.setItem("token", "demo-token");
-      localStorage.setItem("demo_user", email);
-      setLoading(false);
+    try {
+      const data = await api.login(email, password);
+      setToken(data.access_token);
       navigate("/app");
-    }, 500);
+    } catch (err) {
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
-      <img src="/images/Bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <img
+        src="/images/Bg.jpg"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
       <div className="absolute inset-0 bg-black/55" />
 
       <div
@@ -49,7 +52,9 @@ export default function Login() {
         style={glassCard}
       >
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">Login</h1>
+          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">
+            Login
+          </h1>
           <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/80 text-lg">
             👤
           </div>
@@ -94,7 +99,10 @@ export default function Login() {
             <Link to="/register" className="text-white/60 hover:text-white">
               {t("auth.noAccount")}
             </Link>
-            <Link to="/forgot-password" className="text-white/70 hover:text-white hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-white/70 hover:text-white hover:underline underline-offset-2"
+            >
               {t("auth.forgotLink")}
             </Link>
           </div>
@@ -110,7 +118,9 @@ export default function Login() {
         </form>
 
         <p className="mt-6 text-center text-xs text-white/40">
-          <Link to="/" className="hover:text-white/70">← Home</Link>
+          <Link to="/" className="hover:text-white/70">
+            ← Home
+          </Link>
         </p>
       </div>
     </div>

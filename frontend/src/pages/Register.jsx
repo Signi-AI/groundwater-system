@@ -27,7 +27,9 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const onChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -41,20 +43,17 @@ export default function Register() {
       setError("Password must be at least 6 characters");
       return;
     }
-    if (!form.email) {
-      setError("Email is required");
-      return;
-    }
 
     setLoading(true);
     try {
       await api.register({
-        full_name: form.full_name,
         email: form.email,
+        full_name: form.full_name || form.email.split("@")[0],
         password: form.password,
       });
-      const loginResult = await api.login(form.email, form.password);
-      setToken(loginResult.access_token);
+
+      const loginData = await api.login(form.email, form.password);
+      setToken(loginData.access_token);
       navigate("/app/predict");
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -65,7 +64,11 @@ export default function Register() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
-      <img src="/images/Bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <img
+        src="/images/Bg.jpg"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
       <div className="absolute inset-0 bg-black/55" />
 
       <div
@@ -73,7 +76,9 @@ export default function Register() {
         style={glassCard}
       >
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">Register</h1>
+          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">
+            Register
+          </h1>
           <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/80 text-lg">
             👤
           </div>
@@ -149,7 +154,10 @@ export default function Register() {
             <Link to="/login" className="text-white/60 hover:text-white">
               {t("auth.haveAccount")} {t("auth.signIn")}
             </Link>
-            <Link to="/forgot-password" className="text-white/70 hover:text-white hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-white/70 hover:text-white hover:underline underline-offset-2"
+            >
               {t("auth.forgotLink")}
             </Link>
           </div>
@@ -165,7 +173,9 @@ export default function Register() {
         </form>
 
         <p className="mt-6 text-center text-xs text-white/40">
-          <Link to="/" className="hover:text-white/70">← Home</Link>
+          <Link to="/" className="hover:text-white/70">
+            ← Home
+          </Link>
         </p>
       </div>
     </div>
