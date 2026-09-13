@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -37,9 +37,13 @@ def login_form(
 
 
 @router.post("/send-otp")
-def send_otp(payload: SendOtpRequest, db: Session = Depends(get_db)):
+def send_otp(
+    payload: SendOtpRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     """1) Generate OTP and send to registered user's email."""
-    return auth_service.send_otp(db, payload.email)
+    return auth_service.send_otp(db, payload.email, background_tasks)
 
 
 @router.post("/verify-otp")
@@ -60,9 +64,13 @@ def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db))
 
 
 @router.post("/forgot-password")
-def forgot_password(payload: SendOtpRequest, db: Session = Depends(get_db)):
+def forgot_password(
+    payload: SendOtpRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     """Alias of send-otp (same behaviour)."""
-    return auth_service.send_otp(db, payload.email)
+    return auth_service.send_otp(db, payload.email, background_tasks)
 
 
 @router.post("/change-password")

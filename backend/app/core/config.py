@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     MAIL_SERVER:str="smtp.gmail.com"
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS:bool=False
+    SMTP_TIMEOUT_SECONDS: int = 10
     DEBUG_OTP:bool=True
 
     @property

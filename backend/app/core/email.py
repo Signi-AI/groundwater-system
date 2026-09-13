@@ -37,7 +37,11 @@ def send_otp_email(to_email: str, otp: str) -> bool:
     msg.attach(MIMEText(body, "plain", "utf-8"))
 
     try:
-        server = smtplib.SMTP(server_host, port, timeout=30)
+        server = smtplib.SMTP(
+            server_host,
+            port,
+            timeout=settings.SMTP_TIMEOUT_SECONDS,
+        )
         server.ehlo()
         if settings.MAIL_STARTTLS:
             server.starttls()

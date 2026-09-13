@@ -57,7 +57,7 @@ def login(db: Session, payload: LoginRequest) -> str:
     return create_access_token(str(user.id))
 
 
-def send_otp(db: Session, email: str) -> dict:
+def send_otp(db: Session, email: str, background_tasks=None) -> dict:
     """
     Generate 6-digit OTP, save on user, send to that user's email.
     Always same public message (security).
@@ -72,6 +72,11 @@ def send_otp(db: Session, email: str) -> dict:
 
     otp = _generate_otp()
     user_repository.set_reset_token(db, user, otp, _get_expiry(10))
+
+    if background_tasks is not None:
+        background_tasks.add_task(send_otp_email, user.email, otp)
+        public_msg["message"] = "OTP is being sent to the registered email address."
+        return public_msg
 
     sent = send_otp_email(user.email, otp)
     if not sent:
