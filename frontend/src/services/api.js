@@ -1,4 +1,4 @@
-﻿const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8001";
+﻿const API_URL = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "");
 
 export function getToken() {
   return localStorage.getItem("token");
@@ -25,7 +25,14 @@ async function request(path, options = {}) {
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  let res;
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  } catch {
+    throw new Error(
+      "Backend haipatikani. Hakikisha API server ina-run, kisha refresh ukurasa."
+    );
+  }
   const text = await res.text();
   let data = null;
   try {
