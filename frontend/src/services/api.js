@@ -1,4 +1,4 @@
-﻿const API_URL = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "");
+﻿const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8001";
 
 export function getToken() {
   return localStorage.getItem("token");
@@ -19,86 +19,115 @@ export function isLoggedIn() {
 async function request(path, options = {}) {
   const headers = { ...(options.headers || {}) };
   const token = getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    headers.Authorization = "Bearer " + token;
+  }
 
   if (options.body && !(options.body instanceof URLSearchParams)) {
     headers["Content-Type"] = "application/json";
   }
 
-  let res;
-  try {
-    res = await fetch(`${API_URL}${path}`, { ...options, headers });
-  } catch {
-    throw new Error(
-      "Backend haipatikani. Hakikisha API server ina-run, kisha refresh ukurasa."
-    );
-  }
+  const res = await fetch(API_URL + path, {
+    ...options,
+    headers,
+  });
+
   const text = await res.text();
   let data = null;
   try {
     data = text ? JSON.parse(text) : null;
-  } catch {
+  } catch (e) {
     data = text;
   }
 
   if (!res.ok) {
-    if (res.status === 401) {
-      clearToken();
-      window.dispatchEvent(new Event("auth:expired"));
-    }
     let msg = "Request failed";
-    if (typeof data?.detail === "string") msg = data.detail;
-    else if (Array.isArray(data?.detail)) {
-      msg = data.detail.map((d) => d.msg || JSON.stringify(d)).join(", ");
+    if (data && typeof data.detail === "string") {
+      msg = data.detail;
+    } else if (data && Array.isArray(data.detail)) {
+      msg = data.detail
+        .map(function (d) {
+          return d.msg || JSON.stringify(d);
+        })
+        .join(", ");
     }
     const err = new Error(msg);
     err.status = res.status;
     throw err;
   }
+
   return data;
 }
 
 export const api = {
-  register: (body) =>
-    request("/api/auth/register", {
+  // Auth
+  register: function (body) {
+    return request("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(body),
-    }),
+    });
+  },
 
-  login: async (email, password) => {
+  login: async function (email, password) {
     const body = new URLSearchParams();
     body.append("username", email);
     body.append("password", password);
     return request("/api/auth/login/form", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body,
+      body: body,
     });
   },
 
-  sendOtp: (email) =>
-    request("/api/auth/send-otp", {
+  sendOtp: function (email) {
+    return request("/api/auth/send-otp", {
       method: "POST",
-      body: JSON.stringify({ email }),
-    }),
+      body: JSON.stringify({ email: email }),
+    });
+  },
 
-  verifyOtp: (email, otp) =>
-    request("/api/auth/verify-otp", {
+  verifyOtp: function (email, otp) {
+    return request("/api/auth/verify-otp", {
       method: "POST",
-      body: JSON.stringify({ email, otp }),
-    }),
+      body: JSON.stringify({ email: email, otp: otp }),
+    });
+  },
 
-  resetPassword: (email, otp, new_password) =>
-    request("/api/auth/reset-password", {
+  resetPassword: function (email, otp, new_password) {
+    return request("/api/auth/reset-password", {
       method: "POST",
-      body: JSON.stringify({ email, otp, new_password }),
-    }),
+      body: JSON.stringify({
+        email: email,
+        otp: otp,
+        new_password: new_password,
+      }),
+    });
+  },
 
-  createPrediction: (body) =>
-    request("/api/predictions", {
+  changePassword: function (current_password, new_password) {
+    return request("/api/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({
+        current_password: current_password,
+        new_password: new_password,
+      }),
+    });
+  },
+
+  // Profile
+  getProfile: function () {
+    return request("/api/users/me/profile");
+  },
+
+  // Predictions
+  createPrediction: function (body) {
+    return request("/api/predictions", {
       method: "POST",
       body: JSON.stringify(body),
-    }),
+    });
+  },
 
-  getPredictions: () => request("/api/predictions"),
+  getPredictions: function () {
+    return request("/api/predictions");
+  },
 };
