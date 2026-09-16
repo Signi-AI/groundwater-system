@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import ScrollRevealText from "../components/ScrollRevealText";
 import StatsBar from "../components/AnimatedCounter";
 import GlassFeatureCard from "../components/GlassFeatureCard";
+import Footer from "../components/Footer";
 
 const SIDES = [
   "/images/side-1.jpeg",
@@ -304,9 +305,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="bg-black text-white/40 py-8 text-center text-xs">
-        <p>{t("landing.footer")}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
