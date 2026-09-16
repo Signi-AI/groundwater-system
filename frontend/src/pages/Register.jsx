@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 import { api, setToken } from "../services/api";
 
-const glassCard = {
-  background: "rgba(20, 24, 32, 0.55)",
-  backdropFilter: "blur(18px)",
-  WebkitBackdropFilter: "blur(18px)",
-};
+const inputCls =
+  "w-full bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg p-3 text-sm outline-none transition";
 
-const glassBtn = {
-  background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.2)",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-};
+const primaryBtn =
+  "w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg py-3 shadow-lg shadow-blue-500/25 transition-all disabled:opacity-60";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -24,17 +19,16 @@ export default function Register() {
     password: "",
     confirm: "",
   });
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     if (form.password !== form.confirm) {
       setError("Passwords do not match");
       return;
@@ -43,7 +37,6 @@ export default function Register() {
       setError("Password must be at least 6 characters");
       return;
     }
-
     setLoading(true);
     try {
       await api.register({
@@ -51,7 +44,6 @@ export default function Register() {
         full_name: form.full_name || form.email.split("@")[0],
         password: form.password,
       });
-
       const loginData = await api.login(form.email, form.password);
       setToken(loginData.access_token);
       navigate("/app/predict");
@@ -64,49 +56,71 @@ export default function Register() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
-      <img
-        src="/images/Bg.jpg"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      <div className="absolute inset-0 bg-black/55" />
+      <img src="/images/Bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-slate-950/60" />
 
-      <div
-        className="relative z-10 w-full max-w-md rounded-[2rem] rounded-tl-[4rem] border border-white/15 shadow-2xl p-8 sm:p-10"
-        style={glassCard}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className="relative z-10 w-full max-w-md rounded-2xl backdrop-blur-xl bg-slate-900/70 border border-white/10 shadow-2xl p-6 sm:p-8"
       >
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">
-            Register
-          </h1>
-          <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/80 text-lg">
-            👤
-          </div>
+        {/* Tabs — pill on Register side */}
+        <div className="relative flex p-1 rounded-full bg-white/5 border border-white/10 mb-8">
+          <Link
+            to="/login"
+            className="relative z-10 flex-1 text-center text-sm font-medium py-2.5 text-gray-400 hover:text-white transition"
+          >
+            {t("auth.signIn") || "Ingia"}
+          </Link>
+          <Link
+            to="/register"
+            className="relative z-10 flex-1 text-center text-sm font-semibold py-2.5 text-white"
+          >
+            {t("auth.createAccount") || "Fungua Akaunti"}
+          </Link>
+          <motion.div
+            layoutId="authTab"
+            className="absolute top-1 bottom-1 right-1 w-[calc(50%-4px)] rounded-full bg-blue-600 shadow-lg shadow-blue-500/30"
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          />
         </div>
 
-        {error && (
-          <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-400/20 rounded-lg px-3 py-2">
-            {error}
-          </div>
-        )}
+        <h1 className="text-white text-xl font-semibold mb-1">
+          {t("auth.createAccount") || "Fungua Akaunti"}
+        </h1>
+        <p className="text-gray-400 text-sm mb-6">Create your account to start predicting</p>
 
-        <form onSubmit={onSubmit} className="space-y-6">
-          <div className="border-b border-white/25 pb-2">
-            <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-              <span>👤</span> {t("auth.fullName")}
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1.5">
+              {t("auth.fullName") || "Full name"}
             </label>
             <input
               name="full_name"
               value={form.full_name}
               onChange={onChange}
               placeholder="Your name"
-              className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
+              className={inputCls}
             />
           </div>
 
-          <div className="border-b border-white/25 pb-2">
-            <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-              <span>✉️</span> {t("auth.email")}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1.5">
+              {t("auth.email") || "Email"}
             </label>
             <input
               type="email"
@@ -114,70 +128,71 @@ export default function Register() {
               value={form.email}
               onChange={onChange}
               required
-              placeholder="Email ID"
-              className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
+              placeholder="name@email.com"
+              className={inputCls}
             />
           </div>
 
-          <div className="border-b border-white/25 pb-2">
-            <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-              <span>🔒</span> {t("auth.password")}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1.5">
+              {t("auth.password") || "Password"}
             </label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={onChange}
-              required
-              minLength={6}
-              placeholder="Password"
-              className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
-            />
+            <div className="relative">
+              <input
+                type={showPw ? "text" : "password"}
+                name="password"
+                value={form.password}
+                onChange={onChange}
+                required
+                minLength={6}
+                placeholder="••••••••"
+                className={inputCls + " pr-11"}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw(!showPw)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm"
+              >
+                {showPw ? "🙈" : "👁"}
+              </button>
+            </div>
           </div>
 
-          <div className="border-b border-white/25 pb-2">
-            <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-              <span>🔒</span> {t("auth.confirmPassword")}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1.5">
+              {t("auth.confirmPassword") || "Confirm password"}
             </label>
-            <input
-              type="password"
-              name="confirm"
-              value={form.confirm}
-              onChange={onChange}
-              required
-              placeholder="Confirm password"
-              className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
-            />
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                name="confirm"
+                value={form.confirm}
+                onChange={onChange}
+                required
+                placeholder="••••••••"
+                className={inputCls + " pr-11"}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm"
+              >
+                {showConfirm ? "🙈" : "👁"}
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs">
-            <Link to="/login" className="text-white/60 hover:text-white">
-              {t("auth.haveAccount")} {t("auth.signIn")}
-            </Link>
-            <Link
-              to="/forgot-password"
-              className="text-white/70 hover:text-white hover:underline underline-offset-2"
-            >
-              {t("auth.forgotLink")}
-            </Link>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 rounded-xl text-white text-sm font-semibold tracking-widest uppercase disabled:opacity-60"
-            style={glassBtn}
-          >
-            {loading ? t("common.loading") : t("auth.createAccount")}
+          <button type="submit" disabled={loading} className={primaryBtn}>
+            {loading ? "..." : t("auth.createAccount") || "FUNGUA AKAUNTI"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-white/40">
-          <Link to="/" className="hover:text-white/70">
+        <p className="mt-6 text-center text-xs text-gray-500">
+          <Link to="/" className="hover:text-gray-300 transition">
             ← Home
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../services/api";
 
-const glassCard = {
-  background: "rgba(20, 24, 32, 0.55)",
-  backdropFilter: "blur(18px)",
-  WebkitBackdropFilter: "blur(18px)",
-};
+const inputCls =
+  "w-full bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg p-3 text-sm outline-none transition";
 
-const glassBtn = {
-  background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.2)",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-};
+const primaryBtn =
+  "w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg py-3 shadow-lg shadow-blue-500/25 transition-all disabled:opacity-60";
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
@@ -21,6 +16,7 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -68,124 +64,118 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
       <img src="/images/Bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-black/55" />
+      <div className="absolute inset-0 bg-slate-950/60" />
 
-      <div
-        className="relative z-10 w-full max-w-md rounded-[2rem] rounded-tl-[4rem] border border-white/15 shadow-2xl p-8 sm:p-10"
-        style={glassCard}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 w-full max-w-md rounded-2xl backdrop-blur-xl bg-slate-900/70 border border-white/10 shadow-2xl p-6 sm:p-8"
       >
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-white text-sm font-semibold tracking-[0.25em] uppercase">
-            {step === 3 ? "Done" : step === 2 ? "Reset" : "Forgot"}
-          </h1>
-          <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white/80 text-lg">
-            🔒
-          </div>
-        </div>
-
-        <p className="text-white/60 text-xs mb-6">
-          {step === 1 && "Enter your email to receive a 6-digit OTP"}
-          {step === 2 && "Enter OTP from email and your new password"}
+        <h1 className="text-white text-xl font-semibold mb-1">
+          {step === 3 ? "Done" : step === 2 ? "Reset password" : "Forgot password"}
+        </h1>
+        <p className="text-gray-400 text-sm mb-6">
+          {step === 1 && "Enter email to receive a 6-digit OTP"}
+          {step === 2 && "Enter OTP and your new password"}
           {step === 3 && "You can sign in with your new password"}
         </p>
 
-        {error && (
-          <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-400/20 rounded-lg px-3 py-2">
-            {error}
-          </div>
-        )}
-        {message && (
-          <div className="mb-4 text-sm text-green-300 bg-green-500/10 border border-green-400/20 rounded-lg px-3 py-2">
-            {message}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+            >
+              {error}
+            </motion.div>
+          )}
+          {message && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-4 text-sm text-blue-200 bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2"
+            >
+              {message}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {step === 1 && (
-          <form onSubmit={sendOtp} className="space-y-6">
-            <div className="border-b border-white/25 pb-2">
-              <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-                <span>✉️</span> {t("auth.email")}
-              </label>
+          <form onSubmit={sendOtp} className="space-y-4">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Email ID"
-                className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
+                placeholder="name@email.com"
+                className={inputCls}
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 rounded-xl text-white text-sm font-semibold tracking-widest uppercase disabled:opacity-60"
-              style={glassBtn}
-            >
-              {loading ? t("common.loading") : "Send OTP"}
+            <button type="submit" disabled={loading} className={primaryBtn}>
+              {loading ? "..." : "Send OTP"}
             </button>
           </form>
         )}
 
         {step === 2 && (
-          <form onSubmit={doReset} className="space-y-6">
-            <div className="border-b border-white/25 pb-2">
-              <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-                <span>🔑</span> OTP (6 digits)
-              </label>
+          <form onSubmit={doReset} className="space-y-4">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1.5">OTP (6 digits)</label>
               <input
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 required
                 maxLength={6}
                 placeholder="123456"
-                className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1 tracking-widest"
+                className={inputCls + " tracking-widest"}
               />
             </div>
-            <div className="border-b border-white/25 pb-2">
-              <label className="flex items-center gap-2 text-white/50 text-xs mb-1">
-                <span>🔒</span> New password
-              </label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="New password"
-                className="w-full bg-transparent text-white text-sm outline-none placeholder:text-white/30 py-1"
-              />
+            <div>
+              <label className="block text-xs text-gray-400 mb-1.5">New password</label>
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  placeholder="••••••••"
+                  className={inputCls + " pr-11"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm"
+                >
+                  {showPw ? "🙈" : "👁"}
+                </button>
+              </div>
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 rounded-xl text-white text-sm font-semibold tracking-widest uppercase disabled:opacity-60"
-              style={glassBtn}
-            >
-              {loading ? t("common.loading") : "Update password"}
+            <button type="submit" disabled={loading} className={primaryBtn}>
+              {loading ? "..." : "Update password"}
             </button>
           </form>
         )}
 
         {step === 3 && (
-          <Link
-            to="/login"
-            className="block w-full text-center py-3.5 rounded-xl text-white text-sm font-semibold tracking-widest uppercase"
-            style={glassBtn}
-          >
-            {t("auth.signIn")}
+          <Link to="/login" className={primaryBtn + " block text-center"}>
+            {t("auth.signIn") || "INGIA"}
           </Link>
         )}
 
-        <p className="mt-6 text-center text-xs text-white/50">
-          <Link to="/login" className="hover:text-white">
+        <p className="mt-6 text-center text-xs text-gray-500 space-x-2">
+          <Link to="/login" className="hover:text-gray-300">
             Back to login
           </Link>
-          {" · "}
-          <Link to="/" className="hover:text-white">
+          <span>·</span>
+          <Link to="/" className="hover:text-gray-300">
             Home
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
