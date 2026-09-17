@@ -7,6 +7,7 @@ import ScrollRevealText from "../components/ScrollRevealText";
 import StatsBar from "../components/AnimatedCounter";
 import GlassFeatureCard from "../components/GlassFeatureCard";
 import Footer from "../components/Footer";
+import HeroSection from "../components/HeroSection";
 
 const SIDES = [
   "/images/side-1.jpeg",
@@ -121,53 +122,7 @@ export default function Landing() {
           )}
         </header>
 
-        {/* HERO */}
-        <section className="relative z-10 flex items-center py-24 md:py-32 min-h-[85vh]">
-          <div className="max-w-6xl mx-auto px-4 w-full">
-            <div className="max-w-3xl">
-              <motion.span
-                {...fadeUp}
-                className="inline-flex text-xs bg-white/10 text-white/90 px-3 py-1 rounded-full mb-6 border border-white/20"
-              >
-                {t("landing.badge")}
-              </motion.span>
-
-              <ScrollRevealText
-                as="h1"
-                text={String(t("landing.title1"))}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.08] tracking-tight"
-              />
-              <ScrollRevealText
-                as="h2"
-                text={String(t("landing.title2"))}
-                className="mt-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.08] tracking-tight"
-              />
-              <ScrollRevealText
-                as="p"
-                text={String(t("landing.subtitle"))}
-                className="mt-8 text-lg sm:text-xl md:text-2xl font-medium leading-relaxed max-w-2xl"
-              />
-
-              <motion.div {...fadeUp} className="mt-10">
-                <Link
-                  to="/register"
-                  className="inline-block px-8 py-3.5 rounded-full bg-[#135AAD] hover:bg-[#0f4a8f] text-white font-semibold text-sm shadow-xl"
-                >
-                  {t("landing.cta")}
-                </Link>
-              </motion.div>
-
-              {/* Animated counters */}
-              <StatsBar
-                items={[
-                  { value: 1240, suffix: "+", label: t("landing.stat1") },
-                  { value: 89, suffix: "%", label: t("landing.stat2") },
-                  { value: 26, suffix: "", label: t("landing.stat3") },
-                ]}
-              />
-            </div>
-          </div>
-        </section>
+      <HeroSection />  
 
         {/* FEATURES — glass + border ray */}
         <section id="features" className="relative z-10 py-20 md:py-28">
