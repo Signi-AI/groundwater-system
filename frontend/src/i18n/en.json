@@ -52,7 +52,20 @@
     "faq5a": "English and Kiswahili. Use the language button on the top right.",
     "ctaTitle": "Ready to assess a site?",
     "ctaSub": "Create an account and start your first prediction.",
-    "footer": "© 2026 Groundwater Prediction System · Tanzania"
+    "footer": "© 2026 Groundwater Prediction System · Tanzania",
+"cardDepth": "Water Depth",
+"cardExpected": "Expected",
+"cardAccuracy": "Accuracy",
+"cardConfidence": "Model confidence",
+"cardPotential": "Potential",
+"cardWaterPotential": "Water potential",
+"cardCoverage": "Coverage",
+"cardWaterQuality": "Water quality",
+"cardPreview": "Site preview",
+"cardSiteDodoma": "Site – Dodoma",
+"cardSiteArusha": "Site – Arusha",
+"cardSiteMbeya": "Site – Mbeya",
+"cardBeforeDrillBody": "Reduce cost and risk with data-driven guidance."
   },
   "auth": {
     "registerTitle": "Create account",
