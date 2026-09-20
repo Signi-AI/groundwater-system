@@ -12,3 +12,10 @@ pydantic-settings
 python-dotenv
 email-validator
 joblib
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+xgboost
+seaborn
+matplotlib

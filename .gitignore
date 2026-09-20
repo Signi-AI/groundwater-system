@@ -11,3 +11,7 @@ build/
 .vscode/
 backend/groundwater.db
 backend/*.db
+data/
+backend/ml/models/
+backend/venv/
+*.pkl
