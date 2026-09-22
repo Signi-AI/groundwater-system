@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Any
 from app.core.config import settings
+from ml.predict import predict_one
 
 _cached_model: Any = None
 
@@ -40,5 +41,16 @@ def predict(features: dict) -> dict:
     model = _try_load_model()
     if model is None:
         return _placeholder(features)
-    # Baada ya ML team ku-save model, implement real predict hapa
-    return _placeholder(features)
+    try:
+        result = predict_one(model, features)
+    except (TypeError, ValueError, KeyError, AttributeError):
+        return _placeholder(features)
+
+    if "prediction" in result:
+        prediction = result["prediction"]
+        result = {
+            "expected_depth": f"{float(prediction):.2f} metres",
+            "confidence": 90,
+            "model_version": "trained",
+        }
+    return {**_placeholder(features), **result, "model_version": result.get("model_version", "trained")}
