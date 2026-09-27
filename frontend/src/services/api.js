@@ -121,11 +121,11 @@ export const api = {
 
   // Predictions
   createPrediction: function (body) {
-    return request("/api/predictions", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
+  return request("/api/predictions", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+},
 
   getPredictions: function () {
     return request("/api/predictions");

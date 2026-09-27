@@ -1,5 +1,6 @@
 node_modules/
 frontend/node_modules/
+.venv/
 backend/venv/
 .env
 *.pyc
@@ -11,3 +12,7 @@ build/
 .vscode/
 backend/groundwater.db
 backend/*.db
+data/
+backend/ml/models/
+backend/venv/
+*.pkl
