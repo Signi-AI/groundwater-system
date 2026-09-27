@@ -15,13 +15,14 @@ class Settings(BaseSettings):
 
     MAIL_USERNAME:str=""
     MAIL_PASSWORD:str=""
-    MAIL_FROM:str=""
     MAIL_PORT:int=587
     MAIL_SERVER:str="smtp.gmail.com"
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS:bool=False
     SMTP_TIMEOUT_SECONDS: int = 10
     DEBUG_OTP:bool=True
+    RESEND_API_KEY: str = ""
+    MAIL_FROM: str = "noreply@e.signiai.co.tz"
 
     @property
     def cors_origins_list(self) -> list:
