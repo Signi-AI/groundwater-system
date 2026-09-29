@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, setToken } from "../services/api";
 import AuthMascot from "../components/AuthMascot";
+import { homePathForRole } from "../utils/roles";
 
 const inputCls =
   "w-full min-h-[44px] bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg px-3 py-3 text-sm sm:text-base outline-none transition";
@@ -26,8 +27,21 @@ export default function Login() {
     setLoading(true);
     try {
       const data = await api.login(email, password);
-      setToken(data.access_token);
-      navigate("/app");
+// inside handleSubmit, after successful login:
+setToken(data.access_token); // or localStorage.setItem("token", ...)
+
+let me = data.user;
+if (!me && api.getMe) {
+  me = await api.getMe();
+}
+if (me) {
+  localStorage.setItem("user", JSON.stringify(me));
+}
+
+const role = me?.role || data?.role || "user";
+navigate(homePathForRole(role));
+// super_admin | admin → /admin/overview
+// user → /app/predict
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
