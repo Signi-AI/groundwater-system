@@ -23,7 +23,8 @@ export function isSuperAdmin(role) {
 }
 
 export function homePathForRole(role) {
-  if (isStaff(role)) return "/admin/overview";
+  const r = String(role || "user").toLowerCase();
+  if (r === "super_admin" || r === "admin") return "/admin/overview";
   return "/app/predict";
 }
 
