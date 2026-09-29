@@ -2,7 +2,7 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-MODEL_DIR = Path(__file__).resolve().parent / "model"
+MODEL_DIR = Path(__file__).resolve().parent / "models"
 
 _model = None
 _features = None
@@ -12,7 +12,7 @@ def load_quality():
     global _model, _features, _region_le
     if _model is None:
         _model = joblib.load(MODEL_DIR / "tanzania_water_rf_model.pkl")
-        _features = joblib.load(MODEL_DIR / "feature_columns.pkl")
+        _features = joblib.load(MODEL_DIR / "feature_column.pkl")
         _region_le = joblib.load(MODEL_DIR / "region_label_encoder.pkl")
 
 def encode_region(region_name: str) -> int:
