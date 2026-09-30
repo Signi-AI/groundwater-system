@@ -60,7 +60,7 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // ---------- Auth ----------
+  // Auth
   register: function (body) {
     return request("/api/auth/register", {
       method: "POST",
@@ -114,7 +114,7 @@ export const api = {
     });
   },
 
-  // ---------- Profile (logged-in user) ----------
+  // Profile
   getProfile: function () {
     return request("/api/users/me/profile");
   },
@@ -123,7 +123,7 @@ export const api = {
     return request("/api/users/me");
   },
 
-  // ---------- Predictions (normal user) ----------
+  // Predictions
   createPrediction: function (body) {
     return request("/api/predictions", {
       method: "POST",
@@ -133,59 +133,5 @@ export const api = {
 
   getPredictions: function () {
     return request("/api/predictions");
-  },
-
-  // ---------- Admin / Super Admin ----------
-  adminStats: function () {
-    return request("/api/admin/stats");
-  },
-
-  listUsers: function () {
-    return request("/api/users");
-  },
-
-  getUser: function (id) {
-    return request("/api/users/" + id);
-  },
-
-  updateUser: function (id, body) {
-    return request("/api/users/" + id, {
-      method: "PATCH",
-      body: JSON.stringify(body),
-    });
-  },
-
-  updateUserRole: function (id, role) {
-    return request("/api/users/" + id + "/role", {
-      method: "PATCH",
-      body: JSON.stringify({ role: role }),
-    });
-  },
-
-  deleteUser: function (id) {
-    return request("/api/users/" + id, {
-      method: "DELETE",
-    });
-  },
-
-  adminResetPassword: function (id, new_password) {
-    return request("/api/admin/users/" + id + "/reset-password", {
-      method: "POST",
-      body: JSON.stringify({ new_password: new_password }),
-    });
-  },
-
-  health: function () {
-    return request("/api/health");
-  },
-
-  listAllPredictions: function () {
-    return request("/api/predictions");
-  },
-
-  deletePrediction: function (id) {
-    return request("/api/predictions/" + id, {
-      method: "DELETE",
-    });
   },
 };
