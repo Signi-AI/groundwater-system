@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, setToken } from "../services/api";
 import AuthMascot from "../components/AuthMascot";
-import { homePathForRole } from "../utils/roles";
 
 const inputCls =
   "w-full min-h-[44px] bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg px-3 py-3 text-sm sm:text-base outline-none transition";
@@ -27,20 +26,17 @@ export default function Login() {
     setLoading(true);
     try {
       const data = await api.login(email, password);
-// inside handleSubmit, after successful login:
-setToken(data.access_token);
+      setToken(data.access_token);
 
-let me = null;
-try {
-  me = await api.getMe();
-} catch (_) {
-  me = data.user || null;
-}
-if (me) localStorage.setItem("user", JSON.stringify(me));
+      try {
+        const me = await api.getMe();
+        if (me) localStorage.setItem("user", JSON.stringify(me));
+      } catch (_) {
+        if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+      }
 
-navigate(homePathForRole(me?.role || "user"));
-// super_admin → /admin/users
-// others     → /app/predict
+      // Kila mtu → user app (hakuna /admin)
+      navigate("/app/predict");
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -50,7 +46,11 @@ navigate(homePathForRole(me?.role || "user"));
 
   return (
     <div className="min-h-[100dvh] min-h-screen relative flex items-center justify-center px-4 py-6 sm:py-10 overflow-x-hidden">
-      <img src="/images/Bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
+      <img
+        src="/images/Bg.jpg"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
       <div className="absolute inset-0 bg-slate-950/45" />
 
       <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center md:items-center justify-center gap-5 md:gap-10 lg:gap-14">
@@ -104,7 +104,9 @@ navigate(homePathForRole(me?.role || "user"));
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5">{t("auth.email") || "Email"}</label>
+              <label className="block text-xs text-gray-400 mb-1.5">
+                {t("auth.email") || "Email"}
+              </label>
               <input
                 type="email"
                 inputMode="email"
@@ -117,7 +119,9 @@ navigate(homePathForRole(me?.role || "user"));
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5">{t("auth.password") || "Password"}</label>
+              <label className="block text-xs text-gray-400 mb-1.5">
+                {t("auth.password") || "Password"}
+              </label>
               <div className="relative">
                 <input
                   type={showPw ? "text" : "password"}
@@ -138,17 +142,24 @@ navigate(homePathForRole(me?.role || "user"));
               </div>
             </div>
             <div className="flex justify-end">
-              <Link to="/forgot-password" className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 py-1">
+              <Link
+                to="/forgot-password"
+                className="text-xs sm:text-sm text-blue-400 hover:text-blue-300 py-1"
+              >
                 {t("auth.forgotLink") || "Forgot password?"}
               </Link>
             </div>
             <button type="submit" disabled={loading} className={primaryBtn}>
-              {loading ? "..." : (t("auth.signIn") || "INGIA").toUpperCase()}
+              {loading
+                ? "..."
+                : (t("auth.signIn") || "INGIA").toUpperCase()}
             </button>
           </form>
 
           <p className="mt-6 text-center text-xs text-gray-500">
-            <Link to="/" className="hover:text-gray-300 inline-block py-2">← Home</Link>
+            <Link to="/" className="hover:text-gray-300 inline-block py-2">
+              ← Home
+            </Link>
           </p>
         </motion.div>
       </div>
