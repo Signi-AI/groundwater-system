@@ -1,6 +1,10 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { clearToken } from "../../services/api";
-import { isSuperAdmin, normalizeRole } from "../../utils/roles";
+
+const link =
+  "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition";
+const active = "bg-blue-600 text-white";
+const idle = "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -8,52 +12,52 @@ export default function AdminLayout() {
   try {
     user = JSON.parse(localStorage.getItem("user") || "{}");
   } catch (_) {}
-  const role = normalizeRole(user?.role);
-  const superA = isSuperAdmin(role);
 
   const logout = () => {
-    clearToken?.();
-    localStorage.removeItem("token");
+    clearToken();
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  const link =
-    "block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800";
-  const active = "bg-blue-600 text-white hover:bg-blue-600";
-
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950">
-      <aside className="w-56 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-        <p className="font-bold text-sm mb-1">GP Admin</p>
-        <p className="text-[10px] uppercase text-blue-600 mb-4">
-          {superA ? "Super Admin" : "Admin"}
-        </p>
-        <nav className="space-y-1">
-          <NavLink to="/admin/overview" className={({ isActive }) => `${link} ${isActive ? active : ""}`}>
-            Overview
-          </NavLink>
-          <NavLink to="/admin/users" className={({ isActive }) => `${link} ${isActive ? active : ""}`}>
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+      <aside className="w-56 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800">
+          <p className="font-bold text-sm">GP Admin</p>
+          <p className="text-[10px] uppercase text-blue-600 font-semibold mt-0.5">
+            Super Admin
+          </p>
+          <p className="text-xs text-slate-500 mt-2 truncate">{user?.email}</p>
+        </div>
+
+        <nav className="flex-1 p-3 space-y-1">
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) => `${link} ${isActive ? active : idle}`}
+          >
             Users
           </NavLink>
-          <NavLink to="/admin/predictions" className={({ isActive }) => `${link} ${isActive ? active : ""}`}>
+          <NavLink
+            to="/admin/predictions"
+            className={({ isActive }) => `${link} ${isActive ? active : idle}`}
+          >
             Predictions
           </NavLink>
-          <NavLink to="/admin/regions" className={({ isActive }) => `${link} ${isActive ? active : ""}`}>
-            Regions
-          </NavLink>
-          {superA && (
-            <NavLink to="/admin/settings" className={({ isActive }) => `${link} ${isActive ? active : ""}`}>
-              Settings
-            </NavLink>
-          )}
         </nav>
-        <button type="button" onClick={logout} className="mt-6 text-sm text-red-600">
-          Logout
-        </button>
+
+        <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+          <button
+            type="button"
+            onClick={logout}
+            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
-      <main className="flex-1 p-6">
-        <Outlet context={{ user, role, superA }} />
+
+      <main className="flex-1 p-4 sm:p-6 overflow-auto">
+        <Outlet />
       </main>
     </div>
   );
