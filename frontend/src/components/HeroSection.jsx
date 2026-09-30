@@ -184,7 +184,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen overflow-hidden">
       <div
         className="absolute inset-0 bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: "url('/hero-pump.jpg')" }}
+        style={{ backgroundImage: "url('/Bg.jpg')" }}
       />
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-screen p-6 md:p-12 max-w-7xl mx-auto">

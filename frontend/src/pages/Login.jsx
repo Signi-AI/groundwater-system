@@ -28,20 +28,19 @@ export default function Login() {
     try {
       const data = await api.login(email, password);
 // inside handleSubmit, after successful login:
-setToken(data.access_token); // or localStorage.setItem("token", ...)
+setToken(data.access_token);
 
-let me = data.user;
-if (!me && api.getMe) {
+let me = null;
+try {
   me = await api.getMe();
+} catch (_) {
+  me = data.user || null;
 }
-if (me) {
-  localStorage.setItem("user", JSON.stringify(me));
-}
+if (me) localStorage.setItem("user", JSON.stringify(me));
 
-const role = me?.role || data?.role || "user";
-navigate(homePathForRole(role));
-// super_admin | admin → /admin/overview
-// user → /app/predict
+navigate(homePathForRole(me?.role || "user"));
+// super_admin → /admin/users
+// others     → /app/predict
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
