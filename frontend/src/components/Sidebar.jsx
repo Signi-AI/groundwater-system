@@ -4,17 +4,17 @@ import { useTranslation } from "react-i18next";
 
 export default function Sidebar({ open, onClose }) {
   const { t } = useTranslation();
-const navItems = [
-  { to: "/app", label: t("nav.dashboard"), icon: "D" },
-  { to: "/app/predict", label: t("nav.predict"), icon: "P" },
-  { to: "/app/history", label: t("nav.history"), icon: "H" },
-  { to: "/app/map", label: t("nav.map"), icon: "M" },
-  { to: "/app/settings", label: t("nav.settings"), icon: "S" },
-];
+
+  const navItems = [
+    { to: "/app/dashboard", label: t("nav.dashboard") || "Dashboard", icon: "D" },
+    { to: "/app/predict", label: t("nav.predict") || "Predict", icon: "P" },
+    { to: "/app/history", label: t("nav.history") || "History", icon: "H" },
+    { to: "/app/map", label: t("nav.map") || "Map", icon: "M" },
+    { to: "/app/settings", label: t("nav.settings") || "Settings", icon: "S" },
+  ];
 
   return (
     <>
-      {/* Overlay - simu tu */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -37,11 +37,13 @@ const navItems = [
             </div>
             <div>
               <p className="text-xs font-semibold leading-tight">GROUNDWATER</p>
-              <p className="text-[10px] text-blue-200 leading-tight">PREDICTION SYSTEM</p>
+              <p className="text-[10px] text-blue-200 leading-tight">
+                PREDICTION SYSTEM
+              </p>
             </div>
           </div>
-          {/* Close button - simu tu */}
           <button
+            type="button"
             onClick={onClose}
             className="lg:hidden text-white/80 hover:text-white text-xl"
           >
@@ -54,7 +56,6 @@ const navItems = [
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === "/app"}
               onClick={onClose}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
@@ -73,7 +74,9 @@ const navItems = [
         </nav>
 
         <div className="px-4 py-4 border-t border-white/10">
-          <p className="text-[10px] uppercase tracking-wider text-blue-200 mb-1">Model Status</p>
+          <p className="text-[10px] uppercase tracking-wider text-blue-200 mb-1">
+            Model Status
+          </p>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-400" />
             <span className="text-xs text-blue-100">Online · v2.1.4</span>
