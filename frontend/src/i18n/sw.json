@@ -13,7 +13,7 @@
     "coverage": "Eneo",
     "faq": "Maswali",
     "badge": "Usaidizi wa maamuzi · Sekta ya maji Tanzania",
-    "title1": "Tafuta Maji.",
+    "title1": "Tafuta Maji",
     "title2": "Kabla Hujachimba.",
     "subtitle": "Weka data ya tovuti — pata mwongozo wa kina, uzalishaji na ubora wa maji kwa sekunde. Kwa wachimba visima Tanzania.",
     "cta": "Anza Kubashiri",
@@ -65,6 +65,11 @@
 "cardSiteArusha": "Tovuti – Arusha",
 "cardSiteMbeya": "Tovuti – Mbeya",
 "cardBeforeDrillBody": "Punguza gharama na hatari kwa mwongozo wa data.",
+"aboutTitle": "Kuhusu Sisi",
+"aboutSubtitle": "Timu ya GP · SignAI",
+"aboutBody": "Sisi ni wanafunzi na members wa SignAI. Tunajenga Mfumo wa Kubashiri Maji Ardhini ili kusaidia maamuzi bora kabla ya kuchimba — kwa haraka, uwazi, na msingi wa data ya Tanzania.",
+"aboutSubgroup": "SigniAI · Subgroups (AI for Weather & Geology) →",
+"aboutInstagram": "Instagram →",
     "footer": "© 2026 Mfumo wa Kubashiri Maji Ardhini · Tanzania"
   },
   "auth": {

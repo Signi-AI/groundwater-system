@@ -222,6 +222,51 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      
+      <section
+  id="about"
+  className="relative py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950"
+>
+  <div className="max-w-3xl mx-auto text-center">
+    {/* Same style as How it works title */}
+    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
+      Kuhusu Sisi
+    </h2>
+    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
+      Timu ya GP · SignAI
+    </p>
+    <p className="text-sm sm:text-base text-slate-600 dark:text-white/70 leading-relaxed">
+      Sisi ni{" "}
+      <span className="text-slate-900 dark:text-white font-medium">Team</span>{" "}
+      na{" "}
+      <span className="text-slate-900 dark:text-white font-medium">
+        members wa SignAI
+      </span>
+      . Tunajenga Mfumo wa Kubashiri Maji Ardhini ili kusaidia maamuzi bora
+      kabla ya kuchimba — kwa haraka, uwazi, na msingi wa data ya Tanzania.
+    </p>
+
+    <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
+      <a
+        href="https://www.signiai.co.tz/sub-groups/ai-for-weather-&-geology"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
+      >
+        SigniAI · Subgroups (AI for Weather &amp; Geology) →
+      </a>
+      <span className="hidden sm:inline text-slate-300 dark:text-white/20">|</span>
+      <a
+        href="https://www.instagram.com/signiai/"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
+      >
+        Instagram →
+      </a>
+    </div>
+  </div>
+</section>
 
       {/* CTA */}
       <section className="relative py-24 md:py-32 overflow-hidden">

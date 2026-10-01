@@ -119,6 +119,10 @@ export const api = {
     return request("/api/users/me/profile");
   },
 
+  getMe: function () {
+    return request("/api/users/me");
+  },
+
   // Predictions
   createPrediction: function (body) {
     return request("/api/predictions", {

@@ -2,6 +2,9 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 
+ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+
+
 class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str = "change-me-in-production-use-long-random-string"
@@ -12,13 +15,14 @@ class Settings(BaseSettings):
 
     MAIL_USERNAME:str=""
     MAIL_PASSWORD:str=""
-    MAIL_FROM:str=""
     MAIL_PORT:int=587
     MAIL_SERVER:str="smtp.gmail.com"
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS:bool=False
     SMTP_TIMEOUT_SECONDS: int = 10
     DEBUG_OTP:bool=True
+    RESEND_API_KEY: str = ""
+    MAIL_FROM: str = "noreply@e.signiai.co.tz"
 
     @property
     def cors_origins_list(self) -> list:
@@ -38,7 +42,7 @@ class Settings(BaseSettings):
         return base / self.MODEL_PATH
 
     class Config:
-        env_file = ".env"
+        env_file = ENV_FILE
         env_file_encoding = "utf-8"
         extra = "ignore"
 
