@@ -18,10 +18,11 @@ export default function Layout() {
   const isSw = i18n.language && i18n.language.startsWith("sw");
   const toggleLang = () => i18n.changeLanguage(isSw ? "en" : "sw");
 
-const logout = () => {
-  clearToken();
-  navigate("/login");
-};
+  const logout = () => {
+    clearToken();
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   useEffect(() => {
     const onAuthExpired = () => navigate("/login", { replace: true });
@@ -30,10 +31,15 @@ const logout = () => {
         setNotifOpen(false);
       }
     };
+    const onCloseSidebar = () => setSidebarOpen(false);
+
     window.addEventListener("auth:expired", onAuthExpired);
+    window.addEventListener("close-sidebar", onCloseSidebar);
     document.addEventListener("mousedown", onClick);
+
     return () => {
       window.removeEventListener("auth:expired", onAuthExpired);
+      window.removeEventListener("close-sidebar", onCloseSidebar);
       document.removeEventListener("mousedown", onClick);
     };
   }, [navigate]);
@@ -43,11 +49,12 @@ const logout = () => {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="h-14 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 shadow-sm">
+        <header className="relative z-30 h-14 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 shadow-sm">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600"
+              className="lg:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
             >
               ☰
             </button>
@@ -58,28 +65,29 @@ const logout = () => {
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={toggle}
-              className="text-xs px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 bg-white"
+              className="text-xs px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800"
             >
               {dark ? "Light" : "Dark"}
             </button>
 
-            {/* ONE language button — same as landing */}
             <button
+              type="button"
               onClick={toggleLang}
               className="text-xs px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 font-semibold bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-200"
             >
               {isSw ? "SW → EN" : "EN → SW"}
             </button>
 
-            {/* Notification bell */}
             <div className="relative" ref={notifRef}>
               <button
+                type="button"
                 onClick={() => {
                   setNotifOpen((v) => !v);
                   if (!notifOpen) markAllRead();
                 }}
-                className="relative p-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600"
+                className="relative p-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                 title="Notifications"
               >
                 🔔
@@ -96,12 +104,18 @@ const logout = () => {
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                       Notifications
                     </span>
-                    <button onClick={clearAll} className="text-[10px] text-[#135AAD]">
+                    <button
+                      type="button"
+                      onClick={clearAll}
+                      className="text-[10px] text-[#135AAD]"
+                    >
                       Clear
                     </button>
                   </div>
                   {items.length === 0 ? (
-                    <p className="p-4 text-xs text-slate-400 text-center">No notifications yet</p>
+                    <p className="p-4 text-xs text-slate-400 text-center">
+                      No notifications yet
+                    </p>
                   ) : (
                     items.map((n) => (
                       <div
@@ -110,8 +124,12 @@ const logout = () => {
                           !n.read ? "bg-blue-50/60 dark:bg-slate-800/50" : ""
                         }`}
                       >
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{n.title}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5">{n.message}</p>
+                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                          {n.title}
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          {n.message}
+                        </p>
                         <p className="text-[10px] text-slate-400 mt-1">{n.time}</p>
                       </div>
                     ))
@@ -120,13 +138,17 @@ const logout = () => {
               )}
             </div>
 
-            <button type="button" onClick={logout} className="...">
-  Logout
-</button>
+            <button
+              type="button"
+              onClick={logout}
+              className="text-xs px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-red-600 bg-white dark:bg-slate-800"
+            >
+              Logout
+            </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 sm:p-6 bg-[#EEF3F9] dark:bg-slate-950">
+        <main className="relative z-0 flex-1 overflow-auto p-4 sm:p-6 min-w-0 bg-[#EEF3F9] dark:bg-slate-950">
           <Outlet />
         </main>
       </div>

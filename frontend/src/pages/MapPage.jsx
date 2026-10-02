@@ -7,7 +7,6 @@ import {
   Popup,
   Circle,
   useMap,
-  useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -27,7 +26,6 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Overview of Tanzania only — NOT a user location
 const TZ_CENTER = [-6.369, 34.8888];
 const TZ_ZOOM = 6;
 
@@ -38,15 +36,6 @@ function FlyTo({ lat, lng, zoom }) {
       map.flyTo([lat, lng], zoom, { duration: 1.1 });
     }
   }, [lat, lng, zoom, map]);
-  return null;
-}
-
-function MapClick({ enabled, onPick }) {
-  useMapEvents({
-    click(e) {
-      if (enabled) onPick(e.latlng.lat, e.latlng.lng);
-    },
-  });
   return null;
 }
 
@@ -70,7 +59,7 @@ async function reverseGeocode(lat, lng) {
 
 export default function MapPage() {
   const { t } = useTranslation();
-  const [position, setPosition] = useState(null); // only after user action
+  const [position, setPosition] = useState(null);
   const [accuracy, setAccuracy] = useState(null);
   const [regionInfo, setRegionInfo] = useState(null);
   const [status, setStatus] = useState("idle");
@@ -78,8 +67,10 @@ export default function MapPage() {
   const [mapType, setMapType] = useState("street");
   const watchRef = useRef(null);
 
-  // Do NOT load old localStorage marker on page open
-  // (that is why it looked "stuck" on one place like CITT)
+  // Funga sidebar (simu) — epuka overlay juu ya ramani
+  useEffect(() => {
+    window.dispatchEvent(new Event("close-sidebar"));
+  }, []);
 
   const stopWatch = () => {
     if (watchRef.current != null && navigator.geolocation) {
@@ -126,17 +117,15 @@ export default function MapPage() {
     stopWatch();
     setStatus("loading");
     setError("");
-    setPosition(null); // clear previous person/place
+    setPosition(null);
     setRegionInfo(null);
     setAccuracy(null);
 
-    // 1) One fresh reading
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng, accuracy: acc } = pos.coords;
         saveAndShow(lat, lng, acc);
 
-        // 2) Keep listening briefly for a better GPS fix (same user, now)
         let best = acc;
         watchRef.current = navigator.geolocation.watchPosition(
           (p) => {
@@ -149,8 +138,6 @@ export default function MapPage() {
           () => {},
           { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
         );
-
-        // stop watch after 12s
         setTimeout(stopWatch, 12000);
       },
       (err) => {
@@ -167,7 +154,7 @@ export default function MapPage() {
       {
         enableHighAccuracy: true,
         timeout: 25000,
-        maximumAge: 0, // never use cached city location
+        maximumAge: 0,
       }
     );
   };
@@ -177,7 +164,7 @@ export default function MapPage() {
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
   return (
-    <div className="space-y-4 flex flex-col min-h-[70vh]">
+    <div className="space-y-4 flex flex-col min-h-[70vh] relative z-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
@@ -187,14 +174,14 @@ export default function MapPage() {
             Shows only the current user location when you press the button
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 relative z-10">
           <button
             type="button"
             onClick={() => setMapType("street")}
             className={`px-3 py-2 rounded-xl text-xs font-medium border ${
               mapType === "street"
                 ? "bg-[#135AAD] text-white border-[#135AAD]"
-                : "bg-white border-slate-200"
+                : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
             }`}
           >
             Street
@@ -205,7 +192,7 @@ export default function MapPage() {
             className={`px-3 py-2 rounded-xl text-xs font-medium border ${
               mapType === "satellite"
                 ? "bg-[#135AAD] text-white border-[#135AAD]"
-                : "bg-white border-slate-200"
+                : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
             }`}
           >
             Satellite
@@ -228,15 +215,15 @@ export default function MapPage() {
       )}
 
       {position && (
-        <div className="bg-white border border-[#D6E4F5] rounded-xl px-4 py-3 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-[#D6E4F5] dark:border-slate-700 rounded-xl px-4 py-3 shadow-sm relative z-10">
           <p className="text-xs uppercase text-slate-400">Current device position</p>
           <p className="text-lg font-semibold text-[#135AAD]">
             {regionInfo?.region || "…"}
           </p>
           {regionInfo?.place && (
-            <p className="text-sm text-slate-600">{regionInfo.place}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">{regionInfo.place}</p>
           )}
-          <p className="text-sm font-mono text-slate-800 mt-1">
+          <p className="text-sm font-mono text-slate-800 dark:text-slate-200 mt-1">
             {position.lat.toFixed(6)}, {position.lng.toFixed(6)}
           </p>
           {accuracy != null && (
@@ -254,17 +241,19 @@ export default function MapPage() {
       )}
 
       {!position && status === "idle" && (
-        <div className="text-sm text-slate-600 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
+        <div className="text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 relative z-10">
           Map shows Tanzania overview only. Press <strong>Use my location</strong> to
           mark where this user is right now.
         </div>
       )}
 
-      <div className="flex-1 min-h-[480px] rounded-2xl overflow-hidden border border-[#D6E4F5] shadow-sm">
+      {/* relative z-0 — map haifunikiwi na sidebar; si fixed inset-0 */}
+      <div className="relative z-0 flex-1 min-h-[480px] rounded-2xl overflow-hidden border border-[#D6E4F5] dark:border-slate-700 shadow-sm isolate">
         <MapContainer
           center={TZ_CENTER}
           zoom={TZ_ZOOM}
-          style={{ height: "100%", width: "100%", minHeight: 480 }}
+          className="h-full w-full"
+          style={{ height: "100%", width: "100%", minHeight: 480, zIndex: 0 }}
           scrollWheelZoom
         >
           <TileLayer

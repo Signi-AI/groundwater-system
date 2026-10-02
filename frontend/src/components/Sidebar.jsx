@@ -15,17 +15,19 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {/* Overlay — simu tu; funga sidebar */}
+      <div
+        className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity ${
+          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={onClose}
+        aria-hidden={!open}
+      />
 
       <aside
         className={`
           fixed lg:static inset-y-0 left-0 z-50
-          w-64 min-h-screen bg-[#135AAD] dark:bg-slate-900 text-white flex flex-col
+          w-64 shrink-0 min-h-screen bg-[#135AAD] dark:bg-slate-900 text-white flex flex-col
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
@@ -45,7 +47,8 @@ export default function Sidebar({ open, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden text-white/80 hover:text-white text-xl"
+            className="lg:hidden text-white/80 hover:text-white text-xl leading-none"
+            aria-label="Close menu"
           >
             ×
           </button>
@@ -65,7 +68,7 @@ export default function Sidebar({ open, onClose }) {
                 }`
               }
             >
-              <span className="w-6 h-6 rounded bg-white/20 flex items-center justify-center text-xs">
+              <span className="w-6 h-6 rounded bg-white/20 flex items-center justify-center text-xs shrink-0">
                 {item.icon}
               </span>
               {item.label}
@@ -78,7 +81,7 @@ export default function Sidebar({ open, onClose }) {
             Model Status
           </p>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-400" />
+            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
             <span className="text-xs text-blue-100">Online · v2.1.4</span>
           </div>
         </div>
