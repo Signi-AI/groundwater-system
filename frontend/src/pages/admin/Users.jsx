@@ -82,50 +82,81 @@ export default function Users() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
+    <div className="w-full max-w-5xl mx-auto space-y-4">
       <div>
-        <h1 className="text-xl font-bold">Users</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Users</h1>
         <p className="text-sm text-slate-500">Manage accounts</p>
       </div>
+
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Search…"
-        className="w-full max-w-sm rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm bg-white dark:bg-slate-900"
+        className="w-full max-w-md rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm bg-white dark:bg-slate-900"
       />
+
       {(err || msg) && (
-        <p className={"text-sm px-3 py-2 rounded-lg " + (err ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-800")}>
+        <p
+          className={
+            "text-sm px-3 py-2 rounded-lg " +
+            (err ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-800")
+          }
+        >
           {err || msg}
         </p>
       )}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <table className="min-w-full text-sm">
+
+      {/* Horizontal scroll on small screens */}
+      <div className="w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 -mx-0">
+        <table className="min-w-[640px] w-full text-sm">
           <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs text-slate-500">
             <tr>
-              <th className="px-3 py-2">Name / Email</th>
-              <th className="px-3 py-2">Role</th>
-              <th className="px-3 py-2">Status</th>
-              <th className="px-3 py-2 text-right">Actions</th>
+              <th className="px-3 py-3 whitespace-nowrap">Name / Email</th>
+              <th className="px-3 py-3 whitespace-nowrap">Role</th>
+              <th className="px-3 py-3 whitespace-nowrap">Status</th>
+              <th className="px-3 py-3 text-right whitespace-nowrap">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
-              <tr><td colSpan={4} className="px-3 py-8 text-center text-slate-400">Loading…</td></tr>
+              <tr>
+                <td colSpan={4} className="px-3 py-10 text-center text-slate-400">
+                  Loading…
+                </td>
+              </tr>
             )}
             {!loading && filtered.length === 0 && (
-              <tr><td colSpan={4} className="px-3 py-8 text-center text-slate-400">No users</td></tr>
+              <tr>
+                <td colSpan={4} className="px-3 py-10 text-center text-slate-400">
+                  No users
+                </td>
+              </tr>
             )}
             {filtered.map((u) => (
-              <tr key={u.id} className="border-t border-slate-100 dark:border-slate-800">
-                <td className="px-3 py-2">
-                  <button type="button" className="text-left hover:underline" onClick={() => { setSelected(u); setNewPass(""); setMsg(""); setErr(""); }}>
-                    <p className="font-medium">{u.name || u.full_name || "—"}</p>
-                    <p className="text-xs text-slate-500">{u.email}</p>
+              <tr
+                key={u.id}
+                className="border-t border-slate-100 dark:border-slate-800"
+              >
+                <td className="px-3 py-3">
+                  <button
+                    type="button"
+                    className="text-left hover:underline max-w-[200px] sm:max-w-none"
+                    onClick={() => {
+                      setSelected(u);
+                      setNewPass("");
+                      setMsg("");
+                      setErr("");
+                    }}
+                  >
+                    <p className="font-medium truncate">
+                      {u.name || u.full_name || "—"}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">{u.email}</p>
                   </button>
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-3 py-3">
                   <select
-                    className="text-xs border rounded-md px-2 py-1 bg-transparent border-slate-200 dark:border-slate-700"
+                    className="text-xs border rounded-md px-2 py-1.5 bg-transparent border-slate-200 dark:border-slate-700 max-w-[120px]"
                     value={u.role || "user"}
                     disabled={u.role === "super_admin"}
                     onChange={(e) => onRole(u, e.target.value)}
@@ -135,9 +166,17 @@ export default function Users() {
                     <option value="super_admin">super_admin</option>
                   </select>
                 </td>
-                <td className="px-3 py-2 text-xs">{u.is_active === false ? "Blocked" : "Active"}</td>
-                <td className="px-3 py-2 text-right space-x-2">
-                  <button type="button" className="text-xs text-blue-600 hover:underline" onClick={() => setSelected(u)}>Profile</button>
+                <td className="px-3 py-3 text-xs whitespace-nowrap">
+                  {u.is_active === false ? "Blocked" : "Active"}
+                </td>
+                <td className="px-3 py-3 text-right whitespace-nowrap space-x-2">
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:underline"
+                    onClick={() => setSelected(u)}
+                  >
+                    Profile
+                  </button>
                   <button
                     type="button"
                     className="text-xs text-red-600 hover:underline disabled:opacity-40"
@@ -153,26 +192,69 @@ export default function Users() {
         </table>
       </div>
 
+      {/* Profile drawer — full width on mobile */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setSelected(null)} />
-          <div className="relative w-full max-w-md h-full bg-white dark:bg-slate-900 p-6 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800">
-            <div className="flex justify-between">
+        <div className="fixed inset-0 z-[60] flex justify-end">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setSelected(null)}
+          />
+          <div className="relative w-full max-w-md h-full bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800">
+            <div className="flex justify-between items-start gap-2">
               <h2 className="text-lg font-bold">User profile</h2>
-              <button type="button" className="text-sm text-slate-500" onClick={() => setSelected(null)}>Close</button>
+              <button
+                type="button"
+                className="text-sm text-slate-500 p-1"
+                onClick={() => setSelected(null)}
+              >
+                Close
+              </button>
             </div>
             <dl className="mt-4 space-y-3 text-sm">
-              <div><dt className="text-xs text-slate-500">Name</dt><dd className="font-medium">{selected.name || selected.full_name || "—"}</dd></div>
-              <div><dt className="text-xs text-slate-500">Email</dt><dd className="font-medium">{selected.email}</dd></div>
-              <div><dt className="text-xs text-slate-500">Role</dt><dd className="font-medium">{selected.role}</dd></div>
+              <div>
+                <dt className="text-xs text-slate-500">Name</dt>
+                <dd className="font-medium break-words">
+                  {selected.name || selected.full_name || "—"}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-slate-500">Email</dt>
+                <dd className="font-medium break-all">{selected.email}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-slate-500">Role</dt>
+                <dd className="font-medium">{selected.role}</dd>
+              </div>
             </dl>
+
             <div className="mt-6">
-              <p className="text-xs font-semibold text-slate-500 mb-2">New password (no rules)</p>
-              <input type="text" value={newPass} onChange={(e) => setNewPass(e.target.value)} placeholder="New password" className="w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm mb-2" />
-              <button type="button" onClick={onResetPassword} className="w-full py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold">Save password</button>
+              <p className="text-xs font-semibold text-slate-500 mb-2">
+                New password (no rules)
+              </p>
+              <input
+                type="text"
+                value={newPass}
+                onChange={(e) => setNewPass(e.target.value)}
+                placeholder="New password"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm mb-2"
+              />
+              <button
+                type="button"
+                onClick={onResetPassword}
+                className="w-full min-h-[44px] py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold"
+              >
+                Save password
+              </button>
             </div>
+
             {selected.role !== "super_admin" && selected.email !== me.email && (
-              <button type="button" onClick={() => onDelete(selected)} className="mt-6 w-full py-2 rounded-lg border border-red-200 text-red-600 text-sm font-semibold">Delete user</button>
+              <button
+                type="button"
+                onClick={() => onDelete(selected)}
+                className="mt-6 w-full min-h-[44px] py-2 rounded-lg border border-red-200 text-red-600 text-sm font-semibold"
+              >
+                Delete user
+              </button>
             )}
           </div>
         </div>

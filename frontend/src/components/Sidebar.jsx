@@ -15,7 +15,6 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* Overlay — simu tu; funga sidebar */}
       <div
         className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -32,22 +31,26 @@ export default function Sidebar({ open, onClose }) {
           ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
-        <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-sm font-bold">
-              GP
-            </div>
-            <div>
-              <p className="text-xs font-semibold leading-tight">GROUNDWATER</p>
-              <p className="text-[10px] text-blue-200 leading-tight">
-                PREDICTION SYSTEM
+        <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <img
+              src="/images/water-finder-logo.png"
+              alt="WATER FINDER"
+              className="w-10 h-10 object-contain shrink-0 rounded-lg bg-white/95 p-0.5"
+            />
+            <div className="min-w-0">
+              <p className="text-xs font-bold leading-tight tracking-wide">
+                WATER FINDER
+              </p>
+              <p className="text-[10px] text-blue-200 leading-tight truncate">
+                Groundwater · Tanzania
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden text-white/80 hover:text-white text-xl leading-none"
+            className="lg:hidden text-white/80 hover:text-white text-xl leading-none shrink-0"
             aria-label="Close menu"
           >
             ×

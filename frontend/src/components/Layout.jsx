@@ -59,7 +59,7 @@ export default function Layout() {
               ☰
             </button>
             <div className="text-sm text-slate-500 dark:text-slate-400 hidden sm:block">
-              {t("landing.brand")} · Tanzania
+              WATER FINDER · Tanzania
             </div>
           </div>
 

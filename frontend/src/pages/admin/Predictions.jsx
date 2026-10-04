@@ -28,8 +28,8 @@ export default function Predictions() {
         <p className="text-sm text-slate-500">Every assessment in the system</p>
       </div>
       {err && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{err}</p>}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <table className="min-w-full text-sm">
+      <div className="w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+  <table className="min-w-[700px] w-full text-sm">
           <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs text-slate-500">
             <tr>
               <th className="px-3 py-2">ID</th>
