@@ -46,7 +46,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
-      {/* Bg + Nav + Hero + Features */}
       <div className="relative overflow-hidden">
         <img
           src="/images/Bg.jpg"
@@ -57,29 +56,42 @@ export default function Landing() {
 
         <header className="relative z-20">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#135AAD] text-white text-sm font-bold flex items-center justify-center shadow">
-                GP
-              </div>
-              <span className="font-semibold text-sm hidden sm:block text-white drop-shadow">
-                {t("landing.brand")}
+            <div className="flex items-center gap-2 min-w-0">
+              <img
+                src="/images/water-finder-logo.png"
+                alt="WATER FINDER"
+                className="w-9 h-9 object-contain rounded-lg bg-white/95 p-0.5 shrink-0 shadow"
+              />
+              <span className="font-semibold text-sm hidden sm:block text-white drop-shadow truncate">
+                WATER FINDER
               </span>
             </div>
 
             <nav className="hidden md:flex items-center gap-6 text-sm text-white/90">
-              <a href="#features" className="hover:text-white">{t("landing.features")}</a>
-              <a href="#how" className="hover:text-white">{t("landing.how")}</a>
-              <a href="#faq" className="hover:text-white">{t("landing.faq")}</a>
+              <a href="#features" className="hover:text-white">
+                {t("landing.features")}
+              </a>
+              <a href="#how" className="hover:text-white">
+                {t("landing.how")}
+              </a>
+              <a href="#faq" className="hover:text-white">
+                {t("landing.faq")}
+              </a>
+              <a href="#about" className="hover:text-white">
+                Kuhusu Sisi
+              </a>
             </nav>
 
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={toggle}
                 className="text-xs px-2.5 py-1.5 rounded-full border border-white/35 text-white bg-black/25 backdrop-blur-sm"
               >
                 {dark ? "Light" : "Dark"}
               </button>
               <button
+                type="button"
                 onClick={toggleLang}
                 className="text-xs px-3 py-1.5 rounded-full border border-white/35 text-white font-semibold bg-black/25 backdrop-blur-sm"
               >
@@ -92,6 +104,7 @@ export default function Landing() {
                 {t("landing.cta")}
               </Link>
               <button
+                type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="md:hidden p-2 rounded-lg border border-white/40 text-white"
               >
@@ -102,14 +115,33 @@ export default function Landing() {
 
           {menuOpen && (
             <div className="md:hidden relative z-20 mx-4 mb-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 px-4 py-4 space-y-3">
-              <a href="#features" onClick={() => setMenuOpen(false)} className="block text-sm py-2 text-white">
+              <a
+                href="#features"
+                onClick={() => setMenuOpen(false)}
+                className="block text-sm py-2 text-white"
+              >
                 {t("landing.features")}
               </a>
-              <a href="#how" onClick={() => setMenuOpen(false)} className="block text-sm py-2 text-white">
+              <a
+                href="#how"
+                onClick={() => setMenuOpen(false)}
+                className="block text-sm py-2 text-white"
+              >
                 {t("landing.how")}
               </a>
-              <a href="#faq" onClick={() => setMenuOpen(false)} className="block text-sm py-2 text-white">
+              <a
+                href="#faq"
+                onClick={() => setMenuOpen(false)}
+                className="block text-sm py-2 text-white"
+              >
                 {t("landing.faq")}
+              </a>
+              <a
+                href="#about"
+                onClick={() => setMenuOpen(false)}
+                className="block text-sm py-2 text-white"
+              >
+                Kuhusu Sisi
               </a>
               <Link
                 to="/register"
@@ -122,9 +154,8 @@ export default function Landing() {
           )}
         </header>
 
-      <HeroSection />  
+        <HeroSection />
 
-        {/* FEATURES — glass + border ray */}
         <section id="features" className="relative z-10 py-20 md:py-28">
           <div className="max-w-6xl mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-12">
@@ -154,13 +185,18 @@ export default function Landing() {
         </section>
       </div>
 
-      {/* HOW */}
       <section id="how" className="py-16 md:py-24 bg-white dark:bg-slate-950">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <motion.h2 {...fadeUp} className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+          <motion.h2
+            {...fadeUp}
+            className="text-2xl sm:text-3xl md:text-4xl font-semibold"
+          >
             {t("landing.howTitle")}
           </motion.h2>
-          <motion.p {...fadeUp} className="mt-3 text-slate-500 text-sm sm:text-base">
+          <motion.p
+            {...fadeUp}
+            className="mt-3 text-slate-500 text-sm sm:text-base"
+          >
             {t("landing.howSub")}
           </motion.p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
@@ -184,7 +220,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section id="faq" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-10">
@@ -206,11 +241,14 @@ export default function Landing() {
                 className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden"
               >
                 <button
+                  type="button"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full text-left px-4 py-3.5 flex justify-between items-center gap-3 text-sm font-medium"
                 >
                   <span>{item.q}</span>
-                  <span className="text-[#135AAD]">{openFaq === idx ? "−" : "+"}</span>
+                  <span className="text-[#135AAD]">
+                    {openFaq === idx ? "−" : "+"}
+                  </span>
                 </button>
                 {openFaq === idx && (
                   <div className="px-4 pb-4 text-sm text-slate-600 dark:text-slate-400">
@@ -222,53 +260,54 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      
+
       <section
-  id="about"
-  className="relative py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950"
->
-  <div className="max-w-3xl mx-auto text-center">
-    {/* Same style as How it works title */}
-    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
-      Kuhusu Sisi
-    </h2>
-    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-      Timu ya GP · SignAI
-    </p>
-    <p className="text-sm sm:text-base text-slate-600 dark:text-white/70 leading-relaxed">
-      Sisi ni{" "}
-      <span className="text-slate-900 dark:text-white font-medium">Team</span>{" "}
-      na{" "}
-      <span className="text-slate-900 dark:text-white font-medium">
-        members wa SignAI
-      </span>
-      . Tunajenga Mfumo wa Kubashiri Maji Ardhini ili kusaidia maamuzi bora
-      kabla ya kuchimba — kwa haraka, uwazi, na msingi wa data ya Tanzania.
-    </p>
-
-    <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
-      <a
-        href="https://www.signiai.co.tz/sub-groups/ai-for-weather-&-geology"
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
+        id="about"
+        className="relative py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950"
       >
-        SigniAI · Subgroups (AI for Weather &amp; Geology) →
-      </a>
-      <span className="hidden sm:inline text-slate-300 dark:text-white/20">|</span>
-      <a
-        href="https://www.instagram.com/signiai/"
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
-      >
-        Instagram →
-      </a>
-    </div>
-  </div>
-</section>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
+            Kuhusu Sisi
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
+            Timu ya WATER FINDER · SignAI
+          </p>
+          <p className="text-sm sm:text-base text-slate-600 dark:text-white/70 leading-relaxed">
+            Sisi ni{" "}
+            <span className="text-slate-900 dark:text-white font-medium">Team</span>{" "}
+            na{" "}
+            <span className="text-slate-900 dark:text-white font-medium">
+              members wa SignAI
+            </span>
+            . Tunajenga <strong>WATER FINDER</strong> — mfumo wa kubashiri maji
+            ardhini ili kusaidia maamuzi bora kabla ya kuchimba — kwa haraka,
+            uwazi, na msingi wa data ya Tanzania.
+          </p>
 
-      {/* CTA */}
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
+            <a
+              href="https://www.signiai.co.tz/sub-groups/ai-for-weather-&-geology"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
+            >
+              SigniAI · Subgroups (AI for Weather &amp; Geology) →
+            </a>
+            <span className="hidden sm:inline text-slate-300 dark:text-white/20">
+              |
+            </span>
+            <a
+              href="https://www.instagram.com/signiai/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
+            >
+              Instagram →
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 p-2">

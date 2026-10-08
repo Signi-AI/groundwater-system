@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, setToken } from "../services/api";
 import AuthMascot from "../components/AuthMascot";
+import { homePathForRole, normalizeRole } from "../utils/roles";
 
 const inputCls =
   "w-full min-h-[44px] bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-lg px-3 py-3 text-sm sm:text-base outline-none transition";
@@ -28,15 +29,29 @@ export default function Login() {
       const data = await api.login(email, password);
       setToken(data.access_token);
 
+      let me = null;
       try {
-        const me = await api.getMe();
-        if (me) localStorage.setItem("user", JSON.stringify(me));
+        me = await api.getMe();
       } catch (_) {
-        if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+        try {
+          me = await api.getProfile();
+        } catch (__) {
+          me = data.user || null;
+        }
       }
 
-      // Kila mtu → user app (hakuna /admin)
-      navigate("/app/predict");
+      // Normalize user object for localStorage + redirect
+      const role = normalizeRole(
+        me?.role || me?.user_role || data?.role || "user"
+      );
+      const userObj = {
+        ...(me || {}),
+        email: me?.email || email,
+        role: role,
+      };
+      localStorage.setItem("user", JSON.stringify(userObj));
+
+      navigate(homePathForRole(role));
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -53,7 +68,7 @@ export default function Login() {
       />
       <div className="absolute inset-0 bg-slate-950/45" />
 
-      <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center md:items-center justify-center gap-5 md:gap-10 lg:gap-14">
+      <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center justify-center gap-5 md:gap-10 lg:gap-14">
         <AuthMascot mode="login" />
 
         <motion.div

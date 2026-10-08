@@ -1,7 +1,32 @@
+@import "leaflet/dist/leaflet.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "leaflet/dist/leaflet.css";
+
+/* ===== Leaflet: chini ya sidebar (z-50) — no overlap ===== */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important;
+}
+
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 2 !important;
+}
 
 @keyframes zoom-soft {
   0%, 100% { transform: scale(1); opacity: 0.55; }

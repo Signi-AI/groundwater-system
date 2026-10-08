@@ -134,4 +134,33 @@ export const api = {
   getPredictions: function () {
     return request("/api/predictions");
   },
+
+  // Super Admin only
+  listUsers: function () {
+    return request("/api/users");
+  },
+
+  deleteUser: function (id) {
+    return request("/api/users/" + id, {
+      method: "DELETE",
+    });
+  },
+
+  updateUserRole: function (id, role) {
+    return request("/api/users/" + id + "/role", {
+      method: "PATCH",
+      body: JSON.stringify({ role: role }),
+    });
+  },
+
+  adminResetPassword: function (id, new_password) {
+    return request("/api/admin/users/" + id + "/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ new_password: new_password }),
+    });
+  },
+
+  listAllPredictions: function () {
+    return request("/api/predictions");
+  },
 };
